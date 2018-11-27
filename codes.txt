@@ -1426,3 +1426,475 @@ vector<int> getTimeStamps(vector<int> time, vector<int> dir) {
 }
 
 #-----------------------
+# tower research
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() 
+{
+	int n;
+	cin >> n;
+	string arr[n];
+	for (int i=0; i<n; i++)
+		cin >> arr[i];
+	// int check[26][2] = {0};
+	vector < vector <int>> check;
+	check.resize (26, vector <int> (2, 0));
+	map < vector < vector <int> >, int > mp;
+	for (int i=0; i<n; i++)
+	{
+		for (int j=0; j<arr[i].size(); j++)
+		{
+			check[arr[i][j] - 'a'][j%2]++;
+		}
+		mp[check]++;
+	}
+	// your code goes here
+	cout << mp.size();
+	return 0;
+}
+
+
+#--------------------
+# BFS
+// Program to print BFS traversal from a given 
+// source vertex. BFS(int s) traverses vertices  
+// reachable from s. 
+#include<iostream> 
+#include <list> 
+  
+using namespace std; 
+  
+// This class represents a directed graph using 
+// adjacency list representation 
+class Graph 
+{ 
+    int V;    // No. of vertices 
+  
+    // Pointer to an array containing adjacency 
+    // lists 
+    list<int> *adj;    
+public: 
+    Graph(int V);  // Constructor 
+  
+    // function to add an edge to graph 
+    void addEdge(int v, int w);  
+  
+    // prints BFS traversal from a given source s 
+    void BFS(int s);   
+}; 
+  
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w); // Add w to v’s list. 
+} 
+  
+void Graph::BFS(int s) 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for(int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Create a queue for BFS 
+    list<int> queue; 
+  
+    // Mark the current node as visited and enqueue it 
+    visited[s] = true; 
+    queue.push_back(s); 
+  
+    // 'i' will be used to get all adjacent 
+    // vertices of a vertex 
+    list<int>::iterator i; 
+  
+    while(!queue.empty()) 
+    { 
+        // Dequeue a vertex from queue and print it 
+        s = queue.front(); 
+        cout << s << " "; 
+        queue.pop_front(); 
+  
+        // Get all adjacent vertices of the dequeued 
+        // vertex s. If a adjacent has not been visited,  
+        // then mark it visited and enqueue it 
+        for (i = adj[s].begin(); i != adj[s].end(); ++i) 
+        { 
+            if (!visited[*i]) 
+            { 
+                visited[*i] = true; 
+                queue.push_back(*i); 
+            } 
+        } 
+    } 
+} 
+  
+// Driver program to test methods of graph class 
+int main() 
+{ 
+    // Create a graph given in the above diagram 
+    Graph g(4); 
+    g.addEdge(0, 1); 
+    g.addEdge(0, 2); 
+    g.addEdge(1, 2); 
+    g.addEdge(2, 0); 
+    g.addEdge(2, 3); 
+    g.addEdge(3, 3); 
+  
+    cout << "Following is Breadth First Traversal "
+         << "(starting from vertex 2) \n"; 
+    g.BFS(2); 
+  
+    return 0; 
+} 
+
+#---------------------
+# DFS
+// C++ program to print DFS traversal for a given given graph 
+#include<iostream> 
+#include         <list> 
+using namespace std; 
+  
+class Graph 
+{ 
+    int V;    // No. of vertices 
+    list<int> *adj;    // Pointer to an array containing adjacency lists 
+    void DFSUtil(int v, bool visited[]);  // A function used by DFS 
+public: 
+    Graph(int V);   // Constructor 
+    void addEdge(int v, int w);   // function to add an edge to graph 
+    void DFS();    // prints DFS traversal of the complete graph 
+}; 
+  
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w); // Add w to v’s list. 
+} 
+  
+void Graph::DFSUtil(int v, bool visited[]) 
+{ 
+    // Mark the current node as visited and print it 
+    visited[v] = true; 
+    cout << v << " "; 
+  
+    // Recur for all the vertices adjacent to this vertex 
+    list<int>::iterator i; 
+    for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+        if(!visited[*i]) 
+            DFSUtil(*i, visited); 
+} 
+  
+// The function to do DFS traversal. It uses recursive DFSUtil() 
+void Graph::DFS() 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Call the recursive helper function to print DFS traversal 
+    // starting from all vertices one by one 
+    for (int i = 0; i < V; i++) 
+        if (visited[i] == false) 
+            DFSUtil(i, visited); 
+} 
+  
+int main() 
+{ 
+    // Create a graph given in the above diagram 
+    Graph g(4); 
+    g.addEdge(0, 1); 
+    g.addEdge(0, 2); 
+    g.addEdge(1, 2); 
+    g.addEdge(2, 0); 
+    g.addEdge(2, 3); 
+    g.addEdge(3, 3); 
+  
+    cout << "Following is Depth First Traversaln"; 
+    g.DFS(); 
+  
+    return 0; 
+} 
+#------------------
+# no. of islands
+// Program to count islands in boolean 2D matrix 
+#include <stdio.h> 
+#include <string.h> 
+#include <stdbool.h> 
+  
+#define ROW 5 
+#define COL 5 
+  
+// A function to check if a given cell (row, col) can be included in DFS 
+int isSafe(int M[][COL], int row, int col, bool visited[][COL]) 
+{ 
+    // row number is in range, column number is in range and value is 1  
+    // and not yet visited 
+    return (row >= 0) && (row < ROW) &&      
+           (col >= 0) && (col < COL) &&       
+           (M[row][col] && !visited[row][col]);  
+} 
+  
+// A utility function to do DFS for a 2D boolean matrix. It only considers 
+// the 8 neighbours as adjacent vertices 
+void DFS(int M[][COL], int row, int col, bool visited[][COL]) 
+{ 
+    // These arrays are used to get row and column numbers of 8 neighbours  
+    // of a given cell 
+    static int rowNbr[] = {-1, -1, -1,  0, 0,  1, 1, 1}; 
+    static int colNbr[] = {-1,  0,  1, -1, 1, -1, 0, 1}; 
+  
+    // Mark this cell as visited 
+    visited[row][col] = true; 
+  
+    // Recur for all connected neighbours 
+    for (int k = 0; k < 8; ++k) 
+        if (isSafe(M, row + rowNbr[k], col + colNbr[k], visited) ) 
+            DFS(M, row + rowNbr[k], col + colNbr[k], visited); 
+} 
+  
+// The main function that returns count of islands in a given boolean 
+// 2D matrix 
+int countIslands(int M[][COL]) 
+{ 
+    // Make a bool array to mark visited cells. 
+    // Initially all cells are unvisited 
+    bool visited[ROW][COL]; 
+    memset(visited, 0, sizeof(visited)); 
+  
+    // Initialize count as 0 and travese through the all cells of 
+    // given matrix 
+    int count = 0; 
+    for (int i = 0; i < ROW; ++i) 
+        for (int j = 0; j < COL; ++j) 
+            if (M[i][j] && !visited[i][j]) // If a cell with value 1 is not 
+            {                         // visited yet, then new island found 
+                DFS(M, i, j, visited);     // Visit all cells in this island. 
+                ++count;                   // and increment island count 
+            } 
+  
+    return count; 
+} 
+  
+// Driver program to test above function 
+int main() 
+{ 
+    int M[][COL]= {  {1, 1, 0, 0, 0}, 
+        {0, 1, 0, 0, 1}, 
+        {1, 0, 0, 1, 1}, 
+        {0, 0, 0, 0, 0}, 
+        {1, 0, 1, 0, 1} 
+    }; 
+  
+    printf("Number of islands is: %d\n", countIslands(M)); 
+  
+    return 0; 
+} 
+#---------------------
+# detect cycle
+// A C++ Program to detect cycle in an undirected graph 
+#include<iostream> 
+#include <list> 
+#include <limits.h> 
+using namespace std; 
+  
+// Class for an undirected graph 
+class Graph 
+{ 
+    int V;    // No. of vertices 
+    list<int> *adj;    // Pointer to an array containing adjacency lists 
+    bool isCyclicUtil(int v, bool visited[], int parent); 
+public: 
+    Graph(int V);   // Constructor 
+    void addEdge(int v, int w);   // to add an edge to graph 
+    bool isCyclic();   // returns true if there is a cycle 
+}; 
+  
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w); // Add w to v’s list. 
+    adj[w].push_back(v); // Add v to w’s list. 
+} 
+  
+// A recursive function that uses visited[] and parent to detect 
+// cycle in subgraph reachable from vertex v. 
+bool Graph::isCyclicUtil(int v, bool visited[], int parent) 
+{ 
+    // Mark the current node as visited 
+    visited[v] = true; 
+  
+    // Recur for all the vertices adjacent to this vertex 
+    list<int>::iterator i; 
+    for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+    { 
+        // If an adjacent is not visited, then recur for that adjacent 
+        if (!visited[*i]) 
+        { 
+           if (isCyclicUtil(*i, visited, v)) 
+              return true; 
+        } 
+  
+        // If an adjacent is visited and not parent of current vertex, 
+        // then there is a cycle. 
+        else if (*i != parent) 
+           return true; 
+    } 
+    return false; 
+} 
+  
+// Returns true if the graph contains a cycle, else false. 
+bool Graph::isCyclic() 
+{ 
+    // Mark all the vertices as not visited and not part of recursion 
+    // stack 
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Call the recursive helper function to detect cycle in different 
+    // DFS trees 
+    for (int u = 0; u < V; u++) 
+        if (!visited[u]) // Don't recur for u if it is already visited 
+          if (isCyclicUtil(u, visited, -1)) 
+             return true; 
+  
+    return false; 
+} 
+  
+// Driver program to test above functions 
+int main() 
+{ 
+    Graph g1(5); 
+    g1.addEdge(1, 0); 
+    g1.addEdge(0, 2); 
+    g1.addEdge(2, 0); 
+    g1.addEdge(0, 3); 
+    g1.addEdge(3, 4); 
+    g1.isCyclic()? cout << "Graph contains cycle\n": 
+                   cout << "Graph doesn't contain cycle\n"; 
+  
+    Graph g2(3); 
+    g2.addEdge(0, 1); 
+    g2.addEdge(1, 2); 
+    g2.isCyclic()? cout << "Graph contains cycle\n": 
+                   cout << "Graph doesn't contain cycle\n"; 
+  
+    return 0; 
+} 
+#-------------------
+# left view of tree
+void leftViewUtil(struct node *root, int level, int *max_level) 
+{ 
+    // Base Case 
+    if (root==NULL)  return; 
+  
+    // If this is the first node of its level 
+    if (*max_level < level) 
+    { 
+        printf("%d\t", root->data); 
+        *max_level = level; 
+    } 
+  
+    // Recur for left and right subtrees 
+    leftViewUtil(root->left, level+1, max_level); 
+    leftViewUtil(root->right, level+1, max_level); 
+} 
+  
+// A wrapper over leftViewUtil() 
+void leftView(struct node *root) 
+{ 
+    int max_level = 0; 
+    leftViewUtil(root, 1, &max_level); 
+} 
+#----------------
+# right view
+// Recursive function to print right view of a binary tree. 
+void rightViewUtil(struct Node *root, int level, int *max_level) 
+{ 
+    // Base Case 
+    if (root==NULL)  return; 
+  
+    // If this is the last Node of its level 
+    if (*max_level < level) 
+    { 
+        printf("%d\t", root->data); 
+        *max_level = level; 
+    } 
+  
+    // Recur for right subtree first, then left subtree 
+    rightViewUtil(root->right, level+1, max_level); 
+    rightViewUtil(root->left, level+1, max_level); 
+} 
+  
+// A wrapper over rightViewUtil() 
+void rightView(struct Node *root) 
+{ 
+    int max_level = 0; 
+    rightViewUtil(root, 1, &max_level); 
+} 
+#------------
+# top view
+void topview(Node* root) 
+{ 
+    if(root==NULL) 
+       return; 
+     queue<Node*>q; 
+     map<int,int> m;  
+     int hd=0; 
+     root->hd=hd; 
+       
+     // push node and horizontal distance to queue 
+    q.push(root); 
+      
+    cout<< "The top view of the tree is : \n"; 
+      
+    while(q.size()) 
+    { 
+        hd=root->hd; 
+          
+        // count function returns 1 if the container  
+        // contains an element whose key is equivalent  
+        // to hd, or returns zero otherwise. 
+        if(m.count(hd)==0)   
+        m[hd]=root->data; 
+        if(root->left) 
+        { 
+            root->left->hd=hd-1; 
+            q.push(root->left); 
+        } 
+        if(root->right) 
+        { 
+            root->right->hd=hd+1; 
+            q.push(root->right); 
+        } 
+        q.pop(); 
+        root=q.front(); 
+        
+    } 
+      
+      
+      
+     for(auto i=m.begin();i!=m.end();i++) 
+    { 
+        cout<<i->second<<" "; 
+    } 
+      
+}
+
