@@ -399,8 +399,1035 @@ int main()
 	return 0; 
 } 
 
-// This code is contributed 
-// by Akanksha Rai(Abby_akku) 
 #---------------
+/*
+BNY Mellon IITK 2018
+Given N, find the number of ordered pairs of positive integers (x,y) satisfying
+the following relation:
+1/x + 1/y = 1/N!
+0 <= N <= 100000
+time O(N * log log N)
+space O(N)
+*/
+#include <iostream>
+#include <vector>
+using namespace std;
+/*
+ * Let k = N!. We solve for general 1/x + 1/y = 1/k
+ * 
+ * x, y > 0 hence x, y > k. Let
+ *     p = #ordered pairs where x=y
+ *     q = #ordered pairs where x<y
+ *     r = #ordered pairs where x>y
+ * 
+ * Clearly, p = 1 and q = r. Our final answer becomes 1 + 2q. Let’s solve for q
+ * 
+ * Since x < y, we get x ∊ (k, 2k). Also, y = x * k / (x - k)
+ * 
+ * Let x’ = x - k. Then x’ ∊ (0, k) and y = (x’ + k) * k / x’ is an integer
+ * greater than x. Hence, x’ divides k^2 and x ∊ (0, 2k) which is already true
+ * 
+ * It means there exists a pair of type (ii) corresponding to x’ ∊ (0, k)
+ * whenever x’ divides k^2. Hence q = #divisors of k^2 less than k
+ * 
+ * Hence final answer becomes #divisors of k^2. Recall k = N!
+ */
+const int mod = 1E9 + 7;
 
+int main() {
+    int n; cin >> n;
+    int ans = 1;
+    vector<bool> isprime(n + 1, true);
+    for (int i = 2; i <= n; i++) {
+        // check if prime
+        if (isprime[i]) {
+            // mark all multiples non-prime
+            for (int imul = 2 * i; imul <= n; imul += i) {
+                isprime[imul] = false;
+            }
+            // update ans
+            int ncopy = n, ipower = 0;
+            while (ncopy) ipower += ncopy /= i;
+            ans = (1LL + 2 * ipower) * ans % mod;
+        }
+    }
+    cout << ans;
+    return 0;
+}
 #---------------
+/*
+Walmart Labs IIT Dhanbad 2018
+Given strings A and B, find the minimum number of manipulation done in string A
+to achieve the following:
+1. A is a palindrome
+2. B is a substring in A
+Here manipulation is defined as changing a character to some other character
+1 <= String Lengths <= 5000
+O(N^2)
+*/
+
+#include <iostream>
+using namespace std;
+
+int palSubstring(string &a, string &b) {
+    int n = a.size(), m = b.size();
+
+    int ans = n + 1;
+    for (int i = 0; i <= n - m; i++) {
+        // Assuming A[i .. i + m - 1] is equal to B
+        int cost = 0, error = 0;
+        
+        string s = a;
+        for (int j = 0; j < m; j++) {
+            if (s[i + j] != b[j]) {
+                s[i + j] = b[j];
+                cost++;
+            }
+        }
+        
+        for (int j = 0; j < n / 2; j++) {
+            if (s[j] != s[n - 1 - j]) {
+                // ensure that at least one of the characters is modifiable
+                // j < i or n - 1 - j > i + m - 1
+                if (j < max(i, n - m - i)) cost++;
+                else error++;
+            }
+        }
+
+        if (ans > cost and not error) {
+            ans = cost;
+        }
+    }
+    return (ans > n ? -1 : ans);
+}
+
+int main() {
+    int t; cin >> t;
+    while (t--) {
+        string a, b; cin >> a >> b;
+        cout << palSubstring(a, b) << '\n';
+    }
+    return 0;
+}
+#-----------------------
+
+/*
+Given a source string and a target string, find the minimum length of a circular
+substring of the source string which contains the target string. If no such 
+substring exists, return -1. Circular substring means any substring of the
+rotated source string.
+For e.g. if source string is "shit" then all circular strings will be
+{"shit", "hits", "itsh", "tshi"}. String x contains string y if all characters 
+appear at least the same number of times in x as it appears in y.
+E.g. for source "kecrha" and target "ack", the best possible answer can be for
+the circular string "hakecr" where the relevant substring is "akec" containing 
+"ack". Hence the final answer is 4
+1 <= length of strings <= 100000
+O(N + 26) solution
+*/
+
+#include <iostream>
+using namespace std;
+
+int CircularSubstring(string source, string target) {
+    int n = source.size();
+    source += source;
+
+    int a[26] = {}, nz = 0;
+    for (char c : target) {
+        if (not a[c - 'a']++) {
+            nz++;
+        }
+    }
+
+    int min_len = 2 * n;
+    for (int i = 0, j = 0; i < 2 * n; i++) {
+        if (not --a[source[i] - 'a']) {
+            nz--;
+        }
+        while (a[source[j] - 'a'] < 0) {
+            a[source[j++] - 'a']++;
+        }
+        if (not nz) {
+            min_len = min(min_len, i - j + 1);
+        }
+    }
+    return min_len > n ? -1 : min_len;
+}
+
+int main() {
+    // your code goes here
+    cout << CircularSubstring("kecrha", "ack") << '\n';
+    return 0;
+}
+
+#-----------------------
+
+/*
+ThoughtSpot IITK 2018
+Given n, find the sum of number of inversions over all derangements of length n.
+As the number can be very large, print it modulo 1000000007.
+Inversion in array A is a pair (i,j) where i < j and A[i] > A[j].
+Derangement of length n is a permutation of 1..n such that A[i] != i for any i.
+1 <= n <= 20
+Formula taken from here - https://oeis.org/A216239
+O(n)
+*/
+int countDerangementInversions(int n) {
+	const int MOD = 1E9 + 7;
+	const int inv12 = (MOD + 1) / 12;
+
+	long long ans = 0;
+	for (long long k = n - 1, v = n * (n - 1); k--; ) {
+		long long x = v * (3 * n + k) * (n - k - 1) % MOD;
+		if (k & 1) x = MOD - x;
+		ans = (ans + x) % MOD;
+		v = v * k % MOD;
+	}
+	return ans * inv12 % MOD;
+}
+
+#-----------------------
+
+/*
+Samsung Delhi IITD 2018
+Initially you have H amount of energy and D distance to travel. You may travel
+with any of the given 5 speeds. But you may only travel in units of 1 km. For 
+each km distance traveled, you will spend corresponding amount of energy.
+e.g. the given speeds are:
+Cost of traveling 1 km: [4, 5, 2, 3, 6]
+Time taken to travel 1 km: [200, 210, 230, 235, 215]
+Find minimum time required to cover total D km with remaining H >= 0
+1 <= H <= 4000
+1 <= D <= 1000
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+const int INF = 2E9;
+
+int dp[4040][1010][5];
+inline int fun(int i, int j, int k, vector<int> &a, vector<int> &b) {
+    if (i < 0) return INF;
+    if (j == 0) return 0;
+    if (k < 0) return INF;
+    if (dp[i][j][k] != -1) return dp[i][j][k];
+    return dp[i][j][k] = min(fun(i, j, k - 1, a, b), b[k] + fun(i - a[k], j - 1, k, a, b));
+}
+
+int getMinTime(vector<int> &cost, vector<int> &time, int H, int D) {
+    memset(dp, -1, sizeof dp);
+    return fun(H, D, 4, cost, time);
+}
+
+int main() {
+    int t (14);
+    vector<int> cost {4, 5, 2, 3, 6};
+    vector<int> time {200, 210, 230, 235, 215};
+    cout << getMinTime(cost, time, t, 4);
+    return 0;
+}
+
+/* Verify for the following t values..
+ * 
+ * t = 16, 17, … -> 800
+ * t = 14, 15 -> 830
+ * t = 13 -> 860
+ */
+
+#-----------------------
+
+/*
+Nutanix IITD 2018
+We are given the inorder and postorder traversal of a Binary tree. The data in 
+the nodes are alphanumeric characters. Had to classify the tree shape into one 
+of the following types:
+/ (forward slash) if the shape of tree is like a forward slash
+\ (Backward slash) if the shape is like a backward slash
+< (less than) if the tree shape is like
+> (greater than)
+^ (exponent symbol) if the shape of tree is like
+# (hash) if none of the above
+Below figures are for further clarity (a, b, c represent nodes) :
+         a         a               a         a
+        /           \             /           \            a
+(/)    b      (\)    b      (<)  b      (>)    b    (^)   / \    (#) all other
+      /               \           \           /          b   c
+     c                 c           c         c
+*/
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+bool check(string s, string t) { // O(n^2)
+    // >T .. <T
+    for (int i = s.size(); --i; ) {
+        string tir(t.substr(0, i));
+        reverse(tir.begin(), tir.end());
+        if (s.substr(0, i) == tir and s.substr(i) == t.substr(i)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+string solve() {
+    string s, t; cin >> s >> t;
+    string sr(s); reverse(sr.begin(), sr.end());
+    string tr(t); reverse(tr.begin(), tr.end());
+    if (s == t) return "/"; // T .. T
+    if (s == tr) return "\\"; // > .. <
+    if (check(s, t)) return "<"; // >T .. <T
+    if (check(sr, t)) return ">"; // >T .. T<
+    if (check(sr, tr)) return "^"; // T> .. T<
+    return "#"; // else
+}
+
+int main() {
+    // your code goes here
+    int t; cin >> t;
+    while (t--) {
+        cout << solve() << '\n';
+    }
+    return 0;
+}
+
+#-----------------------
+
+/*
+BNY Mellon IITK 2018
+Given an encoded string and the Huffman codes for each character, print the
+decoded string. Huffman codes are provided as an array of strings where the key-
+value pair are separated by a tab and appear as an array element. It is ensured
+that the key will be a character and value will be a binary string.
+average O(n) space and time
+Replacing unordered_map with map gives O(n log n) time and O(n) space
+*/
+#include <vector>
+#include <cassert>
+#include <iostream>
+#include <unordered_map>
+using namespace std;
+
+string huffmanDecode(vector<string> codes, string encoded) {
+    int n = codes.size();
+    unordered_map<string,char> ids;
+    for (int i = 0; i < n; i++) {
+        char key = codes[i][0];
+        string val = codes[i].substr(2);
+        ids[val] = key;
+    }
+    string decoded = "", cur = "";
+    for (char c : encoded) {
+        cur += c;
+        if (ids.find(cur) != ids.end()) {
+            decoded += ids[cur];
+            cur = "";
+        }
+    }
+    if (cur != "") {
+        decoded += ids[cur];
+    }
+    return decoded;
+}
+
+int main() {
+    // Driver Program to test above function
+    assert(huffmanDecode(
+        {"a\t01", "b\t110", "c\t101", "d\t0010", "\n\t1111"},
+        "1100010110111101") == "bdb\na");
+    return 0;
+}
+
+#-----------------------
+
+/*
+Nutanix IISc 2018
+https://www.codechef.com/problems/CLKLZM
+O(n + m log m)
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+signed main() {
+    // your code goes here
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    int cases; cin >> cases;
+    while (cases--) {
+        int n, m; cin >> n >> m;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+
+        vector<pair<pair<int,int>,int>> b(m);
+        for (int i = 0; i < m; i++) {
+            int l, r, k; cin >> l >> r >> k;
+            b[i] = {{l - 1, r - 1}, k};
+        }
+        sort(b.begin(), b.end(), [](pair<pair<int,int>,int> l, pair<pair<int,int>,int> r) {
+            if (l.first.first == r.first.first) return l.first.second > r.first.second;
+            return l.first.first < r.first.first;
+        });
+
+        vector<int> c(n);
+        int j = 0, ext = 0, ans = 0, fl = 0;
+        priority_queue<pair<int,int>> q;
+        for (int i = 0; i < n; i++) {
+            a[i] -= ext;
+
+            while (j < m and b[j].first.first <= i) {
+                q.push({b[j].first.second, b[j].second});
+                j++;
+            }
+
+            int r, k;
+            while (a[i] > 0 and not q.empty()) {
+                tie(r, k) = q.top(); q.pop();
+                if (r < i) continue;
+                
+                if (k <= a[i]) {
+                    ans += k;
+                    ext += k;
+                    c[r] += k;
+                    a[i] -= k;
+                }
+                else {
+                    ans += a[i];
+                    ext += a[i];
+                    c[r] += a[i];
+                    q.push({r, k - a[i]});
+                    a[i] = 0;
+                }
+            }
+
+            if (a[i] > 0) {
+                fl = 1;
+                break;
+            }
+            ext -= c[i];
+        }
+        if (fl) cout << "NO";
+        else cout << "YES " << ans;
+        cout << '\n';
+    }
+    return 0;
+}
+
+#-----------------------
+
+/*
+Flipkart IIT Kanpur 2018
+Given a limited number of coins of denominations 1, 5, 10, and 25
+as p, q, r, and s respectively, return the maximum number of coins 
+which can be used to reach a target "price", if possible.
+Your function should return a vector of length 4 representing the
+number of coins used for the denominations 1, 5, 10, 25 respectively.
+If no solution is possible, return a vector of 0s.
+0 <= price, p, q, r, s <= 100000
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+vector<int> dummy(4);
+vector<int> greedy(int price, int p, int q, int r, int s) {
+    if (price <= p) return {price, 0, 0, 0};
+    price -= p;
+
+    if (price <= 5 * q) {
+        if (price % 5 == 0) return {p, price / 5, 0, 0};
+        return dummy;
+    }
+    price -= 5 * q;
+
+    if (price <= 10 * r) {
+        if (price % 10 == 0) return {p, q, price / 10, 0};
+        return dummy;
+    }
+    price -= 10 * r;
+
+    if (price <= 25 * s) {
+        if (price % 25 == 0) return {p, q, r, price / 25};
+        return dummy;
+    }
+
+    return dummy;
+}
+
+vector<int> getMaxCoins(int price, int p, int q, int r, int s) {
+    // Max wastage: 1.. 25; 5.. 5; 10.. 3
+    map<int, set<vector<int>>> mp;
+    for (int i = 0; i <= 25; i++) {
+        for (int j = 0; j <= 5; j++) {
+            for (int k = 0; k <= 3; k++) {
+                if (p >= i and q >= j and r >= k) {
+                    auto counts = greedy(price, p - i, q - j, r - k, s);
+                    if (counts != dummy) {
+                        int count = 0;
+                        for (int c : counts) {
+                            count += c;
+                        }
+                        mp[-count].insert(counts);
+                    }
+                }
+            }
+        }
+    }
+    if (mp.empty()) return dummy;
+    auto feasible = mp.begin()->second;
+    if (feasible.empty()) return dummy;
+    return *feasible.begin();
+}
+
+signed main() {
+    int denominations[] = {1, 5, 10, 25};
+    vector<int> counts = getMaxCoins(99, 98, 0, 0, 1);
+    
+    for (int i = 0; i < 4; i++) {
+        cout << "Number of coins of denomination " << denominations[i] << " = " << counts[i] << '\n';
+    }
+    return 0;
+}
+
+#-----------------------
+
+/*
+Goldman Sachs IITD 2018
+We are given an array of size N, we can delete a subset b1b2b3...bk from the 
+array if 2^b1 + 2^b2 + …..2^bk = 2^x for non-negative integer x where ^ is the
+power operator. Find the minimum number of steps required to delete the 
+complete array.
+0 <= ai <= 1000000
+1 <= N <= 1000000
+Approach: The problem boils down to finding the number of set-bits in 
+the summation 2^a0 + 2^a1 + 2^a2 + ... which can be done by counting the number
+of ai's for each ai and then using the same logic as you do for adding up two 
+decimal numbers but instead of base-10, use base-2
+O(N + L + log L) where L is the upper bound on value of ai
+*/
+int minBin(vector<int> a) {
+	const int L = 1E6; // max possible value of ai
+	vector<int> cnt(L + 30);
+	for (int ai : a) cnt[ai]++;
+
+	int ans = (cnt[0] & 1);
+	for (int i = 1; i < L + 30; i++) {
+		cnt[i] += cnt[i - 1] >> 1;
+		if (cnt[i] & 1) ans++;
+	}
+	return ans;
+}
+
+#-----------------------
+
+/*
+Walmart Labs IIT Dhanbad 2018
+For a given number A, following operations are allowed:
+1. A -> A + 1
+2. A -> A - 1 (provided A > 0)
+3. A -> 2 * A
+Cost of operation 1 and 2 is equal to A and cost of operation 2 is B.
+Find the minimum cost to reach X starting from 0.
+1 <= X <= 100000
+0 <= A, B <= 1000000
+O(X)
+*/
+inline void Min(int &a, int b) {
+    if (a > b) a = b;
+}
+int find_min_cost(int A, int B, int X) {
+    vector<int> ans(4 * X, -1);
+    ans[0] = 0;
+    for (int i = 1; i <= X; i++) {
+        ans[i] = ans[i - 1] + A;
+        
+        if (i & 1) Min(ans[i], ans[i >> 1] + B + A);
+        else Min(ans[i], ans[i >> 1] + B);
+        
+        if (ans[i + 1] != -1) Min(ans[i], ans[i + 1] + A);
+        ans[i << 1 | 1] = ans[i] + B + A;
+        ans[i << 1] = ans[i] + B;
+    }
+    return ans[X];
+}
+
+#-----------------------
+
+/*
+Walmart Labs IITG 2018
+Following operations are defined:
+1. X -> X + 1
+2. X -> X - 1
+Cost of operation 1 and 2 are cost_inc and cost_dec respectively. Given a number
+N, find the minimum cost to reach a number M such that M can be represented as a
+sum of two different single-digit odd prime numbers with positive powers.
+O(k*logn) where k is very small. For n <= 1E8, there are less than 500 possible M
+*/
+#include <set>
+int minCostOddPrimeSum(int n, int cost_dec, int cost_inc) {
+    const int N = 1E6; // N represents the upper bound on input n. Adjust.
+    const int LIM = 2 * N + 10;
+
+    std::set<int> st;
+    for (int p : {3, 5, 7}) {
+        for (int q : {3, 5, 7}) {
+            if (p <= q) continue;
+            // p^i + q^j
+            int pi = p;
+            while (pi <= LIM) {
+                int qj = q;
+                while (pi + qj <= LIM) {
+                    st.insert(pi + qj);
+                    qj *= q;
+                }
+                pi *= p;
+            }
+        }
+    }
+
+    int lo = 0, hi;
+    for (int x : st) {
+        if (x == n) {
+            return 0;
+        }
+        
+        if (x < n) {
+            lo = x;
+        }
+        else {
+            hi = x;
+            break;
+        }
+    }
+    
+    int ans = (hi - n) * cost_inc;
+    int ans1 = (n - lo) * cost_dec;
+    if (lo and ans > ans1) ans = ans1;
+    return ans;
+}
+
+#-----------------------
+
+/*
+Flipkart IIT Kanpur 2018
+Given two vectors of length n representing the x and y 
+coordinates of cartesian points, find the minimum possible area 
+of a rectangle which can be formed using four distinct points which has sides parallel to the x & y axis.
+If non rectangle can be formed, return -1.
+1 <= n <= 1000
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+const int INF = 1E15;
+int getMinArea(vector<int> x, vector<int> y) {
+    map<pair<int,int>, set<int>> m;
+    int n = x.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (x[i] == x[j]) {
+                m[{min(y[i], y[j]), max(y[i], y[j])}].insert(x[i]);
+            }
+        }
+    }
+    
+    int ans = INF;
+    for (auto &p : m) {
+        int a = p.first.second - p.first.first;
+        vector<int> xs(p.second.begin(), p.second.end());
+        int sz = xs.size();
+        for (int i = 1; i < sz; i++) {
+            ans = min(ans, a * (xs[i] - xs[i - 1]));
+        }
+    }
+    return (ans < INF ? ans : -1);
+}
+
+signed main() {
+    cout << getMinArea(
+        {1,1,2,2,3,3,4,4},
+        {1,3,1,8,1,8,1,3}
+    ) << '\n';
+    return 0;
+}
+
+#-----------------------
+
+/*
+Nutanix IISc 2018
+Given destination x = M, initial positions of participants x[1], x[2], .. x[N],
+and constant speeds of participants y[1], y[2], .. y[N], the race goes on in a
+single line formation such that noone can overtake someone else. Hence, if a 
+person with higher speed meets another person with a lower speed during the race
+then he starts moving at the lower speed for rest of the race.
+Find the number of groups that will reach the destination. If two people meet
+at the destination, they are also assumed to form a group.
+1 <= #testcases <= 10
+0 <= N <= 10^5
+1 <= M <= 10^6
+1 <= x[i] < M
+1 <= y[i] <= 10^6
+All x[i] are guaranteed to be different.
+O(n log n)
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+const double eps = 1E-12;
+
+int main() {
+    int t; cin >> t;
+    while (t--) {
+        int n, m; cin >> n >> m;
+        vector<int> x(n);
+        for (int i = 0; i < n; i++) {
+            cin >> x[i];
+        }
+
+        vector<pair<int,double>> xts;
+        for (int i = 0; i < n; i++) {
+            double yi; cin >> yi;
+            xts.emplace_back(-x[i], (m - x[i]) / yi);
+        }
+        sort(xts.begin(), xts.end());
+
+        int ans = 0;
+        double cur = 0;
+        for (auto xt : xts) {
+            if (xt.second > cur + eps) {
+                cur = xt.second;
+                ans++;
+            }
+        }
+        cout << ans << '\n';
+    }
+}
+
+#-----------------------
+
+/*
+IITR Razorpay 2018
+Consider a prison gate having N horizontal rods and M vertical rods.
+You are also provided with two vectors hor and ver containing the 
+row number of missing horizontal rods and vertical rods respectively.
+Return the area of biggest hole in the prison gate.
+1 <= N, M <= 1000000
+1 <= hor[i] <= N
+1 <= ver[i] <= M
+All the elements of a vector are distinct
+O(N + M)
+SKIPPING... O(AlogA + BlogB) where A = hor.size() and B = ver.size()
+*/
+#include<bits/stdc++.h>
+using namespace std;
+
+long int prison(int n, int m, vector<int> hor, vector<int> ver) {
+	vector<bool> xs(n + 1), ys(m + 1);
+	for (int h : hor) xs[h] = true;
+	for (int v : ver) ys[v] = true;
+	int xm = 0, ym = 0;
+	for (int i = 1, j = 0; i <= n; i++) {
+		if (not xs[i]) j = 0;
+		else xm = max(xm, ++j);
+	}
+	for (int i = 1, j = 0; i <= m; i++) {
+		if (not ys[i]) j = 0;
+		else ym = max(ym, ++j);
+	}
+	return (long int)(xm + 1) * (ym + 1);
+}
+
+int main() {
+	cout << prison(10, 10, {}, {});
+	return 0;
+}
+
+#-----------------------
+
+/*	
+Cohesity : IITD
+Scientific_Farmer:
+Harry Stine is one of the wealthiest farmers in the world (net worth of $3.5 billion). Stine is known as a math wiz
+and adopts unique practices when planting seeds and harvesting crops. For instance, his fields are always arranged
+in a circular layout to promote better pollination, e.g., if there are n fields, then the 1st field and the nth field are
+adjacent to each other. Also, his crop harvester machines never harvest two adjacent fields on the same day to
+minimize damage to standing crops. Each field produces a certain yield (value) of crops. Given a list of non-negative
+integers representing the yield of each field, determine the maximum yield of crops that Harry can harvest in a day.
+==> Maximum sum in circular array such that no two elements are adjacent
+Solution Approach:
+	recursive solution with memoization
+	
+	recurse(idx,prev,frst)
+	we are at index = idx, we need to decice whether to take
+	a[idx] or not. prev indicates a[idx - 1] is taken or not
+	frst == 1 : a[1] is taken
+	frst == 0 : a[1] is not taken
+	few examples: from other sources:
+	
+	3
+	4 2 3
+	=> 4
+	
+	4
+	1 2 3 1
+	=> 4
+	
+	6
+	1 2 3 4 5 1
+	=> 9
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+int dp[100009][2][2];
+int a[100009];
+
+int recurse(int idx,bool prev,bool frst) {
+	if(idx == n) {
+		if(!prev and !frst) {
+			return a[idx];
+		}else {
+			return 0;
+		}
+	}
+	if(dp[idx][prev][frst] != -1) return dp[idx][prev][frst];	
+	int res = 0;		// all numbers are non negative
+	if(prev == false) {
+		// take a[idx]
+		res = max(res,recurse(idx+1,true,frst) + a[idx]);	
+		// not take a[idx]
+		res = max(res,recurse(idx+1,false,frst));
+	}else {
+		// not take a[idx]
+		res = max(res,recurse(idx+1,false,frst));
+	}
+	return dp[idx][prev][frst] = res;
+}
+
+int main() {
+	cin >> n;
+	for(int idx = 1;idx<=n;idx++) {
+		cin >> a[idx];
+	}
+	memset(dp,-1,sizeof dp);
+	// call two times
+	// once not taking the first element
+	// once taking the first element
+	int res = max(recurse(2,false,false) , recurse(2,true,true) + a[1]);
+	cout << res << endl;
+}
+
+#-----------------------
+
+/*
+IITR Flipkart 2018
+Given a string s, return a string t satisfying the following:
+1. s contains t
+2. t is a palindrome
+3. t is largest possible
+If multiple t exists, return the lexicographically smallest t.
+1 <= |s| <= 100000
+O(|s| + 26)
+*/
+string smallestRestrictedPalindrome(string s) {
+	int c[26] = {};
+	for (char ch : s) c[ch - 'a']++;
+	string t = "";
+	for (int i = 0; i < 26; i++) {
+		for (int j = c[i] >> 1; j--; ) {
+			t += (char)('a' + i);
+		}
+	}
+	int fl = 0;
+	for (int i = 0; not fl and i < 26; i++) {
+		if (c[i] & 1) {
+			t += (char)('a' + i);
+			fl = 1;
+		}
+	}
+	int n = t.size() - fl;
+	for (int i = n; i--; ) {
+		t += t[i];
+	}
+	return t;
+}
+
+#-----------------------
+
+/*
+Fractal Analytics IITK 2018
+Maintain a stack which can handle the following operations:
+"push k": Push k at the top of stack
+"pop": Remove the topmost element from the stack
+"inc e k": Add k to the bottom e elements of the stack
+pop is never called on an empty stack.
+Given a vector of strings where each string is an operation as
+defined above, print the top element after every operation. If
+the stack is empty at some point, print "EMPTY" instead.
+1 <= #operations <= 1E5
+1 <= k <= size of stack at the time of operation
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+void superStack(vector<string> ops) {
+    int n = ops.size();
+    vector<int> a(n), b(n);
+
+    int k = 0;
+    for (string op : ops) {
+        stringstream strin(op);
+        
+        string optype;
+        strin >> optype;
+        if (optype == "push") {
+            int x;
+            strin >> x;
+            a[k++] = x;
+        }
+        if (optype == "pop") {
+            if (--k) b[k - 1] += b[k];
+            b[k] = 0;
+        }
+        if (optype == "inc") {
+            int x, y;
+            strin >> x >> y;
+            b[x - 1] += y;
+        }
+
+        if (not k) {
+            cout << "EMPTY";
+        }
+        else {
+            cout << a[k - 1] + b[k - 1];
+        }
+        cout << " ";
+    }
+}
+
+int main() {
+    vector<string> operations = {
+        "push 4", "pop", "push 3", "push 5", "inc 2 1",
+        "pop", "push 5", "push -1", "inc 1 5", "pop"
+    };
+    superStack(operations);
+    return 0;
+}
+
+#-----------------------
+
+/*
+Flipkart IIT Kanpur 2018
+https://www.hackerrank.com/contests/hack-it-to-win-it-paypal/challenges/q4-traveling-is-fun
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+struct dsu {
+    vector<int> par, sz;
+    dsu(int n): par(n), sz(n, 1) {
+        for (int i = 0; i < n; i++) {
+            par[i] = i;
+        }
+    }
+    int root(int a) {
+        if (a == par[a]) return a;
+        return par[a] = root(par[a]);
+    }
+    void merge(int a, int b) {
+        a = root(a);
+        b = root(b);
+        if (a == b) return;
+        if (sz[a] < sz[b]) swap(a, b);
+        sz[a] += sz[b];
+        par[b] = a;
+    }
+};
+
+vector<int> findReachable(int n, int g, vector<int> from, vector<int> to) {
+    dsu d(n);
+    for (int k = g + 1; k <= n; k++) {
+        for (int x = 2 * k; x <= n; x += k) {
+            d.merge(x - 1, x - k - 1);
+        }
+    }
+
+    int m = from.size();
+    vector<int> ans;
+    for (int i = 0; i < m; i++) {
+        ans.push_back(d.root(from[i] - 1) == d.root(to[i] - 1));
+    }
+    return ans;
+}
+
+signed main() {
+    vector<int> from {10, 4, 3, 6};
+    vector<int> to {3, 6, 2, 9};
+    vector<int> reachable = findReachable(10, 1, from, to);
+    for (int i = 0; i < 4; i++) {
+        cout << "From " << from[i] << " to " << to[i] << ": ";
+        cout << (reachable[i] ? "Possible" : "Not possible") << '\n';
+    }
+    return 0;
+}
+
+#-----------------------
+
+/*
+Rivigo IITK 2018
+There is a gate in an amusement park. There is an entrance queue and an exit queue.
+Given two arrays of length n, time[] and direction[] such that time[i] represents 
+the time when person_i reaches the gate and direction[i] represents whether the 
+person is joining the entrance queue or exit queue, output an array timestamp[] 
+of length n such that timestamp[i] represents the time when person_i crosses the 
+gate. The gate operates as follows:
+If the gate was used at time t - 1 for entrance, then entry queue will be preferred.
+Else If the gate was used at time t - 1 for exit, then exit queue will be preferred.
+Else exit queue will be preferred.
+1 <= n <= 10^5
+1 <= time[i] <= 10^9
+time[i] <= time[i+1]
+direction[i] = 0 means entrance, direction[i] = 1 means exit.
+O(n)
+*/
+vector<int> getTimeStamps(vector<int> time, vector<int> dir) {
+    int n = time.size();
+    time.push_back(1E9 + 1E6);
+    vector<int> out(n);
+    queue<int> q[2]; // enter(0), exit(1)
+    for (int i = 0, t = time[0], fl = -1; i < n; i++) {
+        q[dir[i]].push(i);
+        while (t < time[i + 1]) {
+            if (not q[0].empty() and not fl) {
+                out[q[0].front()] = t++;
+                q[0].pop();
+                fl = 0;
+            }
+            else if (not q[1].empty()) {
+                out[q[1].front()] = t++;
+                q[1].pop();
+                fl = 1;
+            }
+            else if (not q[0].empty()) {
+                out[q[0].front()] = t++;
+                q[0].pop();
+                fl = 0;
+            }
+            else {
+                t = time[i + 1];
+                fl = -1;
+            }
+        }
+    }
+    return out;
+}
+
+#-----------------------
