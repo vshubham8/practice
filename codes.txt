@@ -1,3 +1,4 @@
+/*
 #rod cutting app-dynamics
 #include<bits/stdc++.h>
 using namespace std;
@@ -117,13 +118,13 @@ void segmentedSieve(int n)
             if (loLim < low) 
                 loLim += prime[i]; 
 
-            /* Mark multiples of prime[i] in [low..high]: 
-                We are marking j - low for j, i.e. each number 
-                in range [low, high] is mapped to [0, high-low] 
-                so if range is [50, 100] marking 50 corresponds 
-                to marking 0, marking 51 corresponds to 1 and 
-                so on. In this way we need to allocate space only 
-                for range */
+            //  Mark multiples of prime[i] in [low..high]: 
+            //     We are marking j - low for j, i.e. each number 
+            //     in range [low, high] is mapped to [0, high-low] 
+            //     so if range is [50, 100] marking 50 corresponds 
+            //     to marking 0, marking 51 corresponds to 1 and 
+            //     so on. In this way we need to allocate space only 
+            //     for range 
             for (int j=loLim; j<high; j+=prime[i]) 
                 mark[j-low] = false; 
         } 
@@ -168,7 +169,7 @@ return temp;
 int factorial(int n) 
 { 
 if (n == 0) 
-	return 1; 
+    return 1; 
 return n*factorial(n-1); 
 } 
 
@@ -183,7 +184,7 @@ int ways = 1; // Initialize result
 // If the tree is empty there is no way of traversing 
 // the tree. 
 if (root == NULL) 
-	return 0; 
+    return 0; 
 
 // Create a queue and enqueue root to it. 
 queue<Node *>q; 
@@ -192,18 +193,18 @@ q.push(root);
 // Level order traversal. 
 while (!q.empty()) 
 { 
-		// Dequeue an item from queue and print it 
-		Node * p = q.front(); 
-		q.pop(); 
+        // Dequeue an item from queue and print it 
+        Node * p = q.front(); 
+        q.pop(); 
 
-		// The number of ways is the product of 
-		// factorials of number of children of each node. 
-		ways = ways*(factorial(p->child.size())); 
+        // The number of ways is the product of 
+        // factorials of number of children of each node. 
+        ways = ways*(factorial(p->child.size())); 
 
-		// Enqueue all childrent of the dequeued item 
-		for (int i=0; i<p->child.size(); i++) 
-			q.push(p->child[i]); 
-	} 
+        // Enqueue all childrent of the dequeued item 
+        for (int i=0; i<p->child.size(); i++) 
+            q.push(p->child[i]); 
+    } 
 
 return(ways); 
 } 
@@ -211,15 +212,15 @@ return(ways);
 // Driver program 
 int main() 
 { 
-/* Let us create below tree 
-*		 A 
-*		 / / \ \ 
-*	 B F D E 
-*	 / \	 | /|\ 
-*	 K J G C H I 
-*	 /\		 \ 
-* N M		 L 
-*/
+// /* Let us create below tree 
+// *         A 
+// *         / / \ \ 
+// *     B F D E 
+// *     / \     | /|\ 
+// *     K J G C H I 
+// *     /\         \ 
+// * N M         L 
+// 
 
 Node *root = newNode('A'); 
 (root->child).push_back(newNode('B')); 
@@ -250,98 +251,98 @@ using namespace std;
 // Structure of a node of an n-ary tree 
 struct Node 
 { 
-	char key; 
-	vector<Node *> child; 
+    char key; 
+    vector<Node *> child; 
 }; 
 
 // Utility function to create a new tree node 
 Node *newNode(int key) 
 { 
-	Node *temp = new Node; 
-	temp->key = key; 
-	return temp; 
+    Node *temp = new Node; 
+    temp->key = key; 
+    return temp; 
 } 
 
 // Utility function that will return the depth 
 // of the tree 
 int depthOfTree(struct Node *ptr) 
 { 
-	// Base case 
-	if (!ptr) 
-		return 0; 
+    // Base case 
+    if (!ptr) 
+        return 0; 
 
-	int maxdepth = 0; 
+    int maxdepth = 0; 
 
-	// Check for all children and find 
-	// the maximum depth 
-	for (vector<Node*>::iterator it = ptr->child.begin(); 
-						it != ptr->child.end(); it++) 
+    // Check for all children and find 
+    // the maximum depth 
+    for (vector<Node*>::iterator it = ptr->child.begin(); 
+                        it != ptr->child.end(); it++) 
 
-		maxdepth = max(maxdepth , depthOfTree(*it)); 
+        maxdepth = max(maxdepth , depthOfTree(*it)); 
 
-	return maxdepth + 1; 
+    return maxdepth + 1; 
 } 
 
 // Function to calculate the diameter 
 // of the tree 
 int diameter(struct Node *ptr) 
 { 
-	// Base case 
-	if (!ptr) 
-		return 0; 
+    // Base case 
+    if (!ptr) 
+        return 0; 
 
-	// Find top two highest children 
-	int max1 = 0, max2 = 0; 
-	for (vector<Node*>::iterator it = ptr->child.begin(); 
-						it != ptr->child.end(); it++) 
-	{ 
-		int h = depthOfTree(*it); 
-		if (h > max1) 
-		max2 = max1, max1 = h; 
-		else if (h > max2) 
-		max2 = h; 
-	} 
+    // Find top two highest children 
+    int max1 = 0, max2 = 0; 
+    for (vector<Node*>::iterator it = ptr->child.begin(); 
+                        it != ptr->child.end(); it++) 
+    { 
+        int h = depthOfTree(*it); 
+        if (h > max1) 
+        max2 = max1, max1 = h; 
+        else if (h > max2) 
+        max2 = h; 
+    } 
 
-	// Iterate over each child for diameter 
-	int maxChildDia = 0; 
-	for (vector<Node*>::iterator it = ptr->child.begin(); 
-						it != ptr->child.end(); it++) 
-		maxChildDia = max(maxChildDia, diameter(*it)); 
+    // Iterate over each child for diameter 
+    int maxChildDia = 0; 
+    for (vector<Node*>::iterator it = ptr->child.begin(); 
+                        it != ptr->child.end(); it++) 
+        maxChildDia = max(maxChildDia, diameter(*it)); 
 
-	return max(maxChildDia, max1 + max2 + 1); 
+    return max(maxChildDia, max1 + max2 + 1); 
 } 
 
 // Driver program 
 int main() 
 { 
-	/* Let us create below tree 
-	*		 A 
-	*		 / / \ \ 
-	*	 B F D E 
-	*	 / \	 | /|\ 
-	*	 K J G C H I 
-	*	 /\		 \ 
-	* N M		 L 
-	*/
+    // /* Let us create below tree 
+    // *         A 
+    // *         / / \ \ 
+    // *     B F D E 
+    // *     / \     | /|\ 
+    // *     K J G C H I 
+    // *     /\         \ 
+    // * N M         L 
+    // 
 
-	Node *root = newNode('A'); 
-	(root->child).push_back(newNode('B')); 
-	(root->child).push_back(newNode('F')); 
-	(root->child).push_back(newNode('D')); 
-	(root->child).push_back(newNode('E')); 
-	(root->child[0]->child).push_back(newNode('K')); 
-	(root->child[0]->child).push_back(newNode('J')); 
-	(root->child[2]->child).push_back(newNode('G')); 
-	(root->child[3]->child).push_back(newNode('C')); 
-	(root->child[3]->child).push_back(newNode('H')); 
-	(root->child[3]->child).push_back(newNode('I')); 
-	(root->child[0]->child[0]->child).push_back(newNode('N')); 
-	(root->child[0]->child[0]->child).push_back(newNode('M')); 
-	(root->child[3]->child[2]->child).push_back(newNode('L')); 
+    Node *root = newNode('A'); 
+    (root->child).push_back(newNode('B')); 
+    (root->child).push_back(newNode('F')); 
+    (root->child).push_back(newNode('D')); 
+    (root->child).push_back(newNode('E')); 
+    (root->child[0]->child).push_back(newNode('K')); 
+    (root->child[0]->child).push_back(newNode('J')); 
+    (root->child[2]->child).push_back(newNode('G')); 
+    (root->child[3]->child).push_back(newNode('C')); 
+    (root->child[3]->child).push_back(newNode('H')); 
+    (root->child[3]->child).push_back(newNode('I')); 
+    (root->child[0]->child[0]->child).push_back(newNode('N')); 
+    (root->child[0]->child[0]->child).push_back(newNode('M')); 
+    (root->child[3]->child[2]->child).push_back(newNode('L')); 
 
-	cout << diameter(root) << endl; 
+    cout << diameter(root) << endl; 
 
-	return 0; 
+    return 0; 
 } 
 #---------------
 # coin change gfg
@@ -352,81 +353,81 @@ using namespace std;
 
 int count( int S[], int m, int n ) 
 { 
-	int i, j, x, y; 
+    int i, j, x, y; 
 
-	// We need n+1 rows as the table 
-	// is constructed in bottom up 
-	// manner using the base case 0 
-	// value case (n = 0) 
-	int table[n + 1][m]; 
-	
-	// Fill the enteries for 0 
-	// value case (n = 0) 
-	for (i = 0; i < m; i++) 
-		table[0][i] = 1; 
+    // We need n+1 rows as the table 
+    // is constructed in bottom up 
+    // manner using the base case 0 
+    // value case (n = 0) 
+    int table[n + 1][m]; 
+    
+    // Fill the enteries for 0 
+    // value case (n = 0) 
+    for (i = 0; i < m; i++) 
+        table[0][i] = 1; 
 
-	// Fill rest of the table entries 
-	// in bottom up manner 
-	for (i = 1; i < n + 1; i++) 
-	{ 
-		for (j = 0; j < m; j++) 
-		{ 
-			// Count of solutions including S[j] 
-			x = (i-S[j] >= 0) ? table[i - S[j]][j] : 0; 
+    // Fill rest of the table entries 
+    // in bottom up manner 
+    for (i = 1; i < n + 1; i++) 
+    { 
+        for (j = 0; j < m; j++) 
+        { 
+            // Count of solutions including S[j] 
+            x = (i-S[j] >= 0) ? table[i - S[j]][j] : 0; 
 
-			// Count of solutions excluding S[j] 
-			y = (j >= 1) ? table[i][j - 1] : 0; 
+            // Count of solutions excluding S[j] 
+            y = (j >= 1) ? table[i][j - 1] : 0; 
 
-			// total count 
-			table[i][j] = x + y; 
-		} 
-	} 
-	return table[n][m - 1]; 
+            // total count 
+            table[i][j] = x + y; 
+        } 
+    } 
+    return table[n][m - 1]; 
 } 
 
 // Driver Code 
 int main() 
 { 
-	int arr[] = {1, 2, 3}; 
-	int m = sizeof(arr)/sizeof(arr[0]); 
-	int n = 4; 
-	cout << count(arr, m, n); 
-	return 0; 
+    int arr[] = {1, 2, 3}; 
+    int m = sizeof(arr)/sizeof(arr[0]); 
+    int n = 4; 
+    cout << count(arr, m, n); 
+    return 0; 
 } 
 
 #---------------
-/*
-BNY Mellon IITK 2018
-Given N, find the number of ordered pairs of positive integers (x,y) satisfying
-the following relation:
-1/x + 1/y = 1/N!
-0 <= N <= 100000
-time O(N * log log N)
-space O(N)
-*/
+// /*
+// BNY Mellon IITK 2018
+// Given N, find the number of ordered pairs of positive integers (x,y) satisfying
+// the following relation:
+// 1/x + 1/y = 1/N!
+// 0 <= N <= 100000
+// time O(N * log log N)
+// space O(N)
+// 
 #include <iostream>
 #include <vector>
 using namespace std;
-/*
- * Let k = N!. We solve for general 1/x + 1/y = 1/k
- * 
- * x, y > 0 hence x, y > k. Let
- *     p = #ordered pairs where x=y
- *     q = #ordered pairs where x<y
- *     r = #ordered pairs where x>y
- * 
- * Clearly, p = 1 and q = r. Our final answer becomes 1 + 2q. Let’s solve for q
- * 
- * Since x < y, we get x ∊ (k, 2k). Also, y = x * k / (x - k)
- * 
- * Let x’ = x - k. Then x’ ∊ (0, k) and y = (x’ + k) * k / x’ is an integer
- * greater than x. Hence, x’ divides k^2 and x ∊ (0, 2k) which is already true
- * 
- * It means there exists a pair of type (ii) corresponding to x’ ∊ (0, k)
- * whenever x’ divides k^2. Hence q = #divisors of k^2 less than k
- * 
- * Hence final answer becomes #divisors of k^2. Recall k = N!
- */
+// /*
+//  * Let k = N!. We solve for general 1/x + 1/y = 1/k
+//  * 
+//  * x, y > 0 hence x, y > k. Let
+//  *     p = #ordered pairs where x=y
+//  *     q = #ordered pairs where x<y
+//  *     r = #ordered pairs where x>y
+//  * 
+//  * Clearly, p = 1 and q = r. Our final answer becomes 1 + 2q. Let’s solve for q
+//  * 
+//  * Since x < y, we get x ∊ (k, 2k). Also, y = x * k / (x - k)
+//  * 
+//  * Let x’ = x - k. Then x’ ∊ (0, k) and y = (x’ + k) * k / x’ is an integer
+//  * greater than x. Hence, x’ divides k^2 and x ∊ (0, 2k) which is already true
+//  * 
+//  * It means there exists a pair of type (ii) corresponding to x’ ∊ (0, k)
+//  * whenever x’ divides k^2. Hence q = #divisors of k^2 less than k
+//  * 
+//  * Hence final answer becomes #divisors of k^2. Recall k = N!
+//  
 const int mod = 1E9 + 7;
 
 int main() {
@@ -450,16 +451,16 @@ int main() {
     return 0;
 }
 #---------------
-/*
-Walmart Labs IIT Dhanbad 2018
-Given strings A and B, find the minimum number of manipulation done in string A
-to achieve the following:
-1. A is a palindrome
-2. B is a substring in A
-Here manipulation is defined as changing a character to some other character
-1 <= String Lengths <= 5000
-O(N^2)
-*/
+// /*
+// Walmart Labs IIT Dhanbad 2018
+// Given strings A and B, find the minimum number of manipulation done in string A
+// to achieve the following:
+// 1. A is a palindrome
+// 2. B is a substring in A
+// Here manipulation is defined as changing a character to some other character
+// 1 <= String Lengths <= 5000
+// O(N^2)
+// 
 
 #include <iostream>
 using namespace std;
@@ -506,20 +507,20 @@ int main() {
 }
 #-----------------------
 
-/*
-Given a source string and a target string, find the minimum length of a circular
-substring of the source string which contains the target string. If no such 
-substring exists, return -1. Circular substring means any substring of the
-rotated source string.
-For e.g. if source string is "shit" then all circular strings will be
-{"shit", "hits", "itsh", "tshi"}. String x contains string y if all characters 
-appear at least the same number of times in x as it appears in y.
-E.g. for source "kecrha" and target "ack", the best possible answer can be for
-the circular string "hakecr" where the relevant substring is "akec" containing 
-"ack". Hence the final answer is 4
-1 <= length of strings <= 100000
-O(N + 26) solution
-*/
+// /*
+// Given a source string and a target string, find the minimum length of a circular
+// substring of the source string which contains the target string. If no such 
+// substring exists, return -1. Circular substring means any substring of the
+// rotated source string.
+// For e.g. if source string is "shit" then all circular strings will be
+// {"shit", "hits", "itsh", "tshi"}. String x contains string y if all characters 
+// appear at least the same number of times in x as it appears in y.
+// E.g. for source "kecrha" and target "ack", the best possible answer can be for
+// the circular string "hakecr" where the relevant substring is "akec" containing 
+// "ack". Hence the final answer is 4
+// 1 <= length of strings <= 100000
+// O(N + 26) solution
+// 
 
 #include <iostream>
 using namespace std;
@@ -558,44 +559,44 @@ int main() {
 
 #-----------------------
 
-/*
-ThoughtSpot IITK 2018
-Given n, find the sum of number of inversions over all derangements of length n.
-As the number can be very large, print it modulo 1000000007.
-Inversion in array A is a pair (i,j) where i < j and A[i] > A[j].
-Derangement of length n is a permutation of 1..n such that A[i] != i for any i.
-1 <= n <= 20
-Formula taken from here - https://oeis.org/A216239
-O(n)
-*/
+// /*
+// ThoughtSpot IITK 2018
+// Given n, find the sum of number of inversions over all derangements of length n.
+// As the number can be very large, print it modulo 1000000007.
+// Inversion in array A is a pair (i,j) where i < j and A[i] > A[j].
+// Derangement of length n is a permutation of 1..n such that A[i] != i for any i.
+// 1 <= n <= 20
+// Formula taken from here - https://oeis.org/A216239
+// O(n)
+// 
 int countDerangementInversions(int n) {
-	const int MOD = 1E9 + 7;
-	const int inv12 = (MOD + 1) / 12;
+    const int MOD = 1E9 + 7;
+    const int inv12 = (MOD + 1) / 12;
 
-	long long ans = 0;
-	for (long long k = n - 1, v = n * (n - 1); k--; ) {
-		long long x = v * (3 * n + k) * (n - k - 1) % MOD;
-		if (k & 1) x = MOD - x;
-		ans = (ans + x) % MOD;
-		v = v * k % MOD;
-	}
-	return ans * inv12 % MOD;
+    long long ans = 0;
+    for (long long k = n - 1, v = n * (n - 1); k--; ) {
+        long long x = v * (3 * n + k) * (n - k - 1) % MOD;
+        if (k & 1) x = MOD - x;
+        ans = (ans + x) % MOD;
+        v = v * k % MOD;
+    }
+    return ans * inv12 % MOD;
 }
 
 #-----------------------
 
-/*
-Samsung Delhi IITD 2018
-Initially you have H amount of energy and D distance to travel. You may travel
-with any of the given 5 speeds. But you may only travel in units of 1 km. For 
-each km distance traveled, you will spend corresponding amount of energy.
-e.g. the given speeds are:
-Cost of traveling 1 km: [4, 5, 2, 3, 6]
-Time taken to travel 1 km: [200, 210, 230, 235, 215]
-Find minimum time required to cover total D km with remaining H >= 0
-1 <= H <= 4000
-1 <= D <= 1000
-*/
+// /*
+// Samsung Delhi IITD 2018
+// Initially you have H amount of energy and D distance to travel. You may travel
+// with any of the given 5 speeds. But you may only travel in units of 1 km. For 
+// each km distance traveled, you will spend corresponding amount of energy.
+// e.g. the given speeds are:
+// Cost of traveling 1 km: [4, 5, 2, 3, 6]
+// Time taken to travel 1 km: [200, 210, 230, 235, 215]
+// Find minimum time required to cover total D km with remaining H >= 0
+// 1 <= H <= 4000
+// 1 <= D <= 1000
+// 
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -623,16 +624,16 @@ int main() {
     return 0;
 }
 
-/* Verify for the following t values..
- * 
- * t = 16, 17, … -> 800
- * t = 14, 15 -> 830
- * t = 13 -> 860
- */
+// /* Verify for the following t values..
+//  * 
+//  * t = 16, 17, … -> 800
+//  * t = 14, 15 -> 830
+//  * t = 13 -> 860
+//  
 
-#-----------------------
+// #-----------------------
 
-/*
+// /*
 Nutanix IITD 2018
 We are given the inorder and postorder traversal of a Binary tree. The data in 
 the nodes are alphanumeric characters. Had to classify the tree shape into one 
@@ -649,7 +650,7 @@ Below figures are for further clarity (a, b, c represent nodes) :
 (/)    b      (\)    b      (<)  b      (>)    b    (^)   / \    (#) all other
       /               \           \           /          b   c
      c                 c           c         c
-*/
+
 #include <iostream>
 #include <algorithm>
 using namespace std;
@@ -689,15 +690,15 @@ int main() {
 
 #-----------------------
 
-/*
-BNY Mellon IITK 2018
-Given an encoded string and the Huffman codes for each character, print the
-decoded string. Huffman codes are provided as an array of strings where the key-
-value pair are separated by a tab and appear as an array element. It is ensured
-that the key will be a character and value will be a binary string.
-average O(n) space and time
-Replacing unordered_map with map gives O(n log n) time and O(n) space
-*/
+// /*
+// BNY Mellon IITK 2018
+// Given an encoded string and the Huffman codes for each character, print the
+// decoded string. Huffman codes are provided as an array of strings where the key-
+// value pair are separated by a tab and appear as an array element. It is ensured
+// that the key will be a character and value will be a binary string.
+// average O(n) space and time
+// Replacing unordered_map with map gives O(n log n) time and O(n) space
+// 
 #include <vector>
 #include <cassert>
 #include <iostream>
@@ -736,11 +737,11 @@ int main() {
 
 #-----------------------
 
-/*
-Nutanix IISc 2018
-https://www.codechef.com/problems/CLKLZM
-O(n + m log m)
-*/
+// /*
+// Nutanix IISc 2018
+// https://www.codechef.com/problems/CLKLZM
+// O(n + m log m)
+// 
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -814,16 +815,16 @@ signed main() {
 
 #-----------------------
 
-/*
-Flipkart IIT Kanpur 2018
-Given a limited number of coins of denominations 1, 5, 10, and 25
-as p, q, r, and s respectively, return the maximum number of coins 
-which can be used to reach a target "price", if possible.
-Your function should return a vector of length 4 representing the
-number of coins used for the denominations 1, 5, 10, 25 respectively.
-If no solution is possible, return a vector of 0s.
-0 <= price, p, q, r, s <= 100000
-*/
+// /*
+// Flipkart IIT Kanpur 2018
+// Given a limited number of coins of denominations 1, 5, 10, and 25
+// as p, q, r, and s respectively, return the maximum number of coins 
+// which can be used to reach a target "price", if possible.
+// Your function should return a vector of length 4 representing the
+// number of coins used for the denominations 1, 5, 10, 25 respectively.
+// If no solution is possible, return a vector of 0s.
+// 0 <= price, p, q, r, s <= 100000
+// 
 #include <bits/stdc++.h>
 using namespace std;
 #define int long long
@@ -890,47 +891,47 @@ signed main() {
 
 #-----------------------
 
-/*
-Goldman Sachs IITD 2018
-We are given an array of size N, we can delete a subset b1b2b3...bk from the 
-array if 2^b1 + 2^b2 + …..2^bk = 2^x for non-negative integer x where ^ is the
-power operator. Find the minimum number of steps required to delete the 
-complete array.
-0 <= ai <= 1000000
-1 <= N <= 1000000
-Approach: The problem boils down to finding the number of set-bits in 
-the summation 2^a0 + 2^a1 + 2^a2 + ... which can be done by counting the number
-of ai's for each ai and then using the same logic as you do for adding up two 
-decimal numbers but instead of base-10, use base-2
-O(N + L + log L) where L is the upper bound on value of ai
-*/
+// /*
+// Goldman Sachs IITD 2018
+// We are given an array of size N, we can delete a subset b1b2b3...bk from the 
+// array if 2^b1 + 2^b2 + …..2^bk = 2^x for non-negative integer x where ^ is the
+// power operator. Find the minimum number of steps required to delete the 
+// complete array.
+// 0 <= ai <= 1000000
+// 1 <= N <= 1000000
+// Approach: The problem boils down to finding the number of set-bits in 
+// the summation 2^a0 + 2^a1 + 2^a2 + ... which can be done by counting the number
+// of ai's for each ai and then using the same logic as you do for adding up two 
+// decimal numbers but instead of base-10, use base-2
+// O(N + L + log L) where L is the upper bound on value of ai
+// 
 int minBin(vector<int> a) {
-	const int L = 1E6; // max possible value of ai
-	vector<int> cnt(L + 30);
-	for (int ai : a) cnt[ai]++;
+    const int L = 1E6; // max possible value of ai
+    vector<int> cnt(L + 30);
+    for (int ai : a) cnt[ai]++;
 
-	int ans = (cnt[0] & 1);
-	for (int i = 1; i < L + 30; i++) {
-		cnt[i] += cnt[i - 1] >> 1;
-		if (cnt[i] & 1) ans++;
-	}
-	return ans;
+    int ans = (cnt[0] & 1);
+    for (int i = 1; i < L + 30; i++) {
+        cnt[i] += cnt[i - 1] >> 1;
+        if (cnt[i] & 1) ans++;
+    }
+    return ans;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Walmart Labs IIT Dhanbad 2018
-For a given number A, following operations are allowed:
-1. A -> A + 1
-2. A -> A - 1 (provided A > 0)
-3. A -> 2 * A
-Cost of operation 1 and 2 is equal to A and cost of operation 2 is B.
-Find the minimum cost to reach X starting from 0.
-1 <= X <= 100000
-0 <= A, B <= 1000000
-O(X)
-*/
+// /*
+// Walmart Labs IIT Dhanbad 2018
+// For a given number A, following operations are allowed:
+// 1. A -> A + 1
+// 2. A -> A - 1 (provided A > 0)
+// 3. A -> 2 * A
+// Cost of operation 1 and 2 is equal to A and cost of operation 2 is B.
+// Find the minimum cost to reach X starting from 0.
+// 1 <= X <= 100000
+// 0 <= A, B <= 1000000
+// O(X)
+// 
 inline void Min(int &a, int b) {
     if (a > b) a = b;
 }
@@ -950,18 +951,18 @@ int find_min_cost(int A, int B, int X) {
     return ans[X];
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Walmart Labs IITG 2018
-Following operations are defined:
-1. X -> X + 1
-2. X -> X - 1
-Cost of operation 1 and 2 are cost_inc and cost_dec respectively. Given a number
-N, find the minimum cost to reach a number M such that M can be represented as a
-sum of two different single-digit odd prime numbers with positive powers.
-O(k*logn) where k is very small. For n <= 1E8, there are less than 500 possible M
-*/
+// /*
+// Walmart Labs IITG 2018
+// Following operations are defined:
+// 1. X -> X + 1
+// 2. X -> X - 1
+// Cost of operation 1 and 2 are cost_inc and cost_dec respectively. Given a number
+// N, find the minimum cost to reach a number M such that M can be represented as a
+// sum of two different single-digit odd prime numbers with positive powers.
+// O(k*logn) where k is very small. For n <= 1E8, there are less than 500 possible M
+// 
 #include <set>
 int minCostOddPrimeSum(int n, int cost_dec, int cost_inc) {
     const int N = 1E6; // N represents the upper bound on input n. Adjust.
@@ -1005,16 +1006,16 @@ int minCostOddPrimeSum(int n, int cost_dec, int cost_inc) {
     return ans;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Flipkart IIT Kanpur 2018
-Given two vectors of length n representing the x and y 
-coordinates of cartesian points, find the minimum possible area 
-of a rectangle which can be formed using four distinct points which has sides parallel to the x & y axis.
-If non rectangle can be formed, return -1.
-1 <= n <= 1000
-*/
+// /*
+// Flipkart IIT Kanpur 2018
+// Given two vectors of length n representing the x and y 
+// coordinates of cartesian points, find the minimum possible area 
+// of a rectangle which can be formed using four distinct points which has sides parallel to the x & y axis.
+// If non rectangle can be formed, return -1.
+// 1 <= n <= 1000
+// 
 #include <bits/stdc++.h>
 using namespace std;
 #define int long long
@@ -1051,25 +1052,25 @@ signed main() {
     return 0;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Nutanix IISc 2018
-Given destination x = M, initial positions of participants x[1], x[2], .. x[N],
-and constant speeds of participants y[1], y[2], .. y[N], the race goes on in a
-single line formation such that noone can overtake someone else. Hence, if a 
-person with higher speed meets another person with a lower speed during the race
-then he starts moving at the lower speed for rest of the race.
-Find the number of groups that will reach the destination. If two people meet
-at the destination, they are also assumed to form a group.
-1 <= #testcases <= 10
-0 <= N <= 10^5
-1 <= M <= 10^6
-1 <= x[i] < M
-1 <= y[i] <= 10^6
-All x[i] are guaranteed to be different.
-O(n log n)
-*/
+// /*
+// Nutanix IISc 2018
+// Given destination x = M, initial positions of participants x[1], x[2], .. x[N],
+// and constant speeds of participants y[1], y[2], .. y[N], the race goes on in a
+// single line formation such that noone can overtake someone else. Hence, if a 
+// person with higher speed meets another person with a lower speed during the race
+// then he starts moving at the lower speed for rest of the race.
+// Find the number of groups that will reach the destination. If two people meet
+// at the destination, they are also assumed to form a group.
+// 1 <= #testcases <= 10
+// 0 <= N <= 10^5
+// 1 <= M <= 10^6
+// 1 <= x[i] < M
+// 1 <= y[i] <= 10^6
+// All x[i] are guaranteed to be different.
+// O(n log n)
+// 
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -1103,79 +1104,79 @@ int main() {
     }
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-IITR Razorpay 2018
-Consider a prison gate having N horizontal rods and M vertical rods.
-You are also provided with two vectors hor and ver containing the 
-row number of missing horizontal rods and vertical rods respectively.
-Return the area of biggest hole in the prison gate.
-1 <= N, M <= 1000000
-1 <= hor[i] <= N
-1 <= ver[i] <= M
-All the elements of a vector are distinct
-O(N + M)
-SKIPPING... O(AlogA + BlogB) where A = hor.size() and B = ver.size()
-*/
+// /*
+// IITR Razorpay 2018
+// Consider a prison gate having N horizontal rods and M vertical rods.
+// You are also provided with two vectors hor and ver containing the 
+// row number of missing horizontal rods and vertical rods respectively.
+// Return the area of biggest hole in the prison gate.
+// 1 <= N, M <= 1000000
+// 1 <= hor[i] <= N
+// 1 <= ver[i] <= M
+// All the elements of a vector are distinct
+// O(N + M)
+// SKIPPING... O(AlogA + BlogB) where A = hor.size() and B = ver.size()
+// 
 #include<bits/stdc++.h>
 using namespace std;
 
 long int prison(int n, int m, vector<int> hor, vector<int> ver) {
-	vector<bool> xs(n + 1), ys(m + 1);
-	for (int h : hor) xs[h] = true;
-	for (int v : ver) ys[v] = true;
-	int xm = 0, ym = 0;
-	for (int i = 1, j = 0; i <= n; i++) {
-		if (not xs[i]) j = 0;
-		else xm = max(xm, ++j);
-	}
-	for (int i = 1, j = 0; i <= m; i++) {
-		if (not ys[i]) j = 0;
-		else ym = max(ym, ++j);
-	}
-	return (long int)(xm + 1) * (ym + 1);
+    vector<bool> xs(n + 1), ys(m + 1);
+    for (int h : hor) xs[h] = true;
+    for (int v : ver) ys[v] = true;
+    int xm = 0, ym = 0;
+    for (int i = 1, j = 0; i <= n; i++) {
+        if (not xs[i]) j = 0;
+        else xm = max(xm, ++j);
+    }
+    for (int i = 1, j = 0; i <= m; i++) {
+        if (not ys[i]) j = 0;
+        else ym = max(ym, ++j);
+    }
+    return (long int)(xm + 1) * (ym + 1);
 }
 
 int main() {
-	cout << prison(10, 10, {}, {});
-	return 0;
+    cout << prison(10, 10, {}, {});
+    return 0;
 }
 
-#-----------------------
+// #-----------------------
 
-/*	
-Cohesity : IITD
-Scientific_Farmer:
-Harry Stine is one of the wealthiest farmers in the world (net worth of $3.5 billion). Stine is known as a math wiz
-and adopts unique practices when planting seeds and harvesting crops. For instance, his fields are always arranged
-in a circular layout to promote better pollination, e.g., if there are n fields, then the 1st field and the nth field are
-adjacent to each other. Also, his crop harvester machines never harvest two adjacent fields on the same day to
-minimize damage to standing crops. Each field produces a certain yield (value) of crops. Given a list of non-negative
-integers representing the yield of each field, determine the maximum yield of crops that Harry can harvest in a day.
-==> Maximum sum in circular array such that no two elements are adjacent
-Solution Approach:
-	recursive solution with memoization
-	
-	recurse(idx,prev,frst)
-	we are at index = idx, we need to decice whether to take
-	a[idx] or not. prev indicates a[idx - 1] is taken or not
-	frst == 1 : a[1] is taken
-	frst == 0 : a[1] is not taken
-	few examples: from other sources:
-	
-	3
-	4 2 3
-	=> 4
-	
-	4
-	1 2 3 1
-	=> 4
-	
-	6
-	1 2 3 4 5 1
-	=> 9
-*/
+// /*    
+// Cohesity : IITD
+// Scientific_Farmer:
+// Harry Stine is one of the wealthiest farmers in the world (net worth of $3.5 billion). Stine is known as a math wiz
+// and adopts unique practices when planting seeds and harvesting crops. For instance, his fields are always arranged
+// in a circular layout to promote better pollination, e.g., if there are n fields, then the 1st field and the nth field are
+// adjacent to each other. Also, his crop harvester machines never harvest two adjacent fields on the same day to
+// minimize damage to standing crops. Each field produces a certain yield (value) of crops. Given a list of non-negative
+// integers representing the yield of each field, determine the maximum yield of crops that Harry can harvest in a day.
+// ==> Maximum sum in circular array such that no two elements are adjacent
+// Solution Approach:
+//     recursive solution with memoization
+    
+//     recurse(idx,prev,frst)
+//     we are at index = idx, we need to decice whether to take
+//     a[idx] or not. prev indicates a[idx - 1] is taken or not
+//     frst == 1 : a[1] is taken
+//     frst == 0 : a[1] is not taken
+//     few examples: from other sources:
+    
+//     3
+//     4 2 3
+//     => 4
+    
+//     4
+//     1 2 3 1
+//     => 4
+    
+//     6
+//     1 2 3 4 5 1
+//     => 9
+// 
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -1184,90 +1185,90 @@ int dp[100009][2][2];
 int a[100009];
 
 int recurse(int idx,bool prev,bool frst) {
-	if(idx == n) {
-		if(!prev and !frst) {
-			return a[idx];
-		}else {
-			return 0;
-		}
-	}
-	if(dp[idx][prev][frst] != -1) return dp[idx][prev][frst];	
-	int res = 0;		// all numbers are non negative
-	if(prev == false) {
-		// take a[idx]
-		res = max(res,recurse(idx+1,true,frst) + a[idx]);	
-		// not take a[idx]
-		res = max(res,recurse(idx+1,false,frst));
-	}else {
-		// not take a[idx]
-		res = max(res,recurse(idx+1,false,frst));
-	}
-	return dp[idx][prev][frst] = res;
+    if(idx == n) {
+        if(!prev and !frst) {
+            return a[idx];
+        }else {
+            return 0;
+        }
+    }
+    if(dp[idx][prev][frst] != -1) return dp[idx][prev][frst];    
+    int res = 0;        // all numbers are non negative
+    if(prev == false) {
+        // take a[idx]
+        res = max(res,recurse(idx+1,true,frst) + a[idx]);    
+        // not take a[idx]
+        res = max(res,recurse(idx+1,false,frst));
+    }else {
+        // not take a[idx]
+        res = max(res,recurse(idx+1,false,frst));
+    }
+    return dp[idx][prev][frst] = res;
 }
 
 int main() {
-	cin >> n;
-	for(int idx = 1;idx<=n;idx++) {
-		cin >> a[idx];
-	}
-	memset(dp,-1,sizeof dp);
-	// call two times
-	// once not taking the first element
-	// once taking the first element
-	int res = max(recurse(2,false,false) , recurse(2,true,true) + a[1]);
-	cout << res << endl;
+    cin >> n;
+    for(int idx = 1;idx<=n;idx++) {
+        cin >> a[idx];
+    }
+    memset(dp,-1,sizeof dp);
+    // call two times
+    // once not taking the first element
+    // once taking the first element
+    int res = max(recurse(2,false,false) , recurse(2,true,true) + a[1]);
+    cout << res << endl;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-IITR Flipkart 2018
-Given a string s, return a string t satisfying the following:
-1. s contains t
-2. t is a palindrome
-3. t is largest possible
-If multiple t exists, return the lexicographically smallest t.
-1 <= |s| <= 100000
-O(|s| + 26)
-*/
+// /*
+// IITR Flipkart 2018
+// Given a string s, return a string t satisfying the following:
+// 1. s contains t
+// 2. t is a palindrome
+// 3. t is largest possible
+// If multiple t exists, return the lexicographically smallest t.
+// 1 <= |s| <= 100000
+// O(|s| + 26)
+// 
 string smallestRestrictedPalindrome(string s) {
-	int c[26] = {};
-	for (char ch : s) c[ch - 'a']++;
-	string t = "";
-	for (int i = 0; i < 26; i++) {
-		for (int j = c[i] >> 1; j--; ) {
-			t += (char)('a' + i);
-		}
-	}
-	int fl = 0;
-	for (int i = 0; not fl and i < 26; i++) {
-		if (c[i] & 1) {
-			t += (char)('a' + i);
-			fl = 1;
-		}
-	}
-	int n = t.size() - fl;
-	for (int i = n; i--; ) {
-		t += t[i];
-	}
-	return t;
+    int c[26] = {};
+    for (char ch : s) c[ch - 'a']++;
+    string t = "";
+    for (int i = 0; i < 26; i++) {
+        for (int j = c[i] >> 1; j--; ) {
+            t += (char)('a' + i);
+        }
+    }
+    int fl = 0;
+    for (int i = 0; not fl and i < 26; i++) {
+        if (c[i] & 1) {
+            t += (char)('a' + i);
+            fl = 1;
+        }
+    }
+    int n = t.size() - fl;
+    for (int i = n; i--; ) {
+        t += t[i];
+    }
+    return t;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Fractal Analytics IITK 2018
-Maintain a stack which can handle the following operations:
-"push k": Push k at the top of stack
-"pop": Remove the topmost element from the stack
-"inc e k": Add k to the bottom e elements of the stack
-pop is never called on an empty stack.
-Given a vector of strings where each string is an operation as
-defined above, print the top element after every operation. If
-the stack is empty at some point, print "EMPTY" instead.
-1 <= #operations <= 1E5
-1 <= k <= size of stack at the time of operation
-*/
+// /*
+// Fractal Analytics IITK 2018
+// Maintain a stack which can handle the following operations:
+// "push k": Push k at the top of stack
+// "pop": Remove the topmost element from the stack
+// "inc e k": Add k to the bottom e elements of the stack
+// pop is never called on an empty stack.
+// Given a vector of strings where each string is an operation as
+// defined above, print the top element after every operation. If
+// the stack is empty at some point, print "EMPTY" instead.
+// 1 <= #operations <= 1E5
+// 1 <= k <= size of stack at the time of operation
+// 
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -1315,12 +1316,12 @@ int main() {
     return 0;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Flipkart IIT Kanpur 2018
-https://www.hackerrank.com/contests/hack-it-to-win-it-paypal/challenges/q4-traveling-is-fun
-*/
+// /*
+// Flipkart IIT Kanpur 2018
+// https://www.hackerrank.com/contests/hack-it-to-win-it-paypal/challenges/q4-traveling-is-fun
+// 
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -1374,25 +1375,25 @@ signed main() {
     return 0;
 }
 
-#-----------------------
+// #-----------------------
 
-/*
-Rivigo IITK 2018
-There is a gate in an amusement park. There is an entrance queue and an exit queue.
-Given two arrays of length n, time[] and direction[] such that time[i] represents 
-the time when person_i reaches the gate and direction[i] represents whether the 
-person is joining the entrance queue or exit queue, output an array timestamp[] 
-of length n such that timestamp[i] represents the time when person_i crosses the 
-gate. The gate operates as follows:
-If the gate was used at time t - 1 for entrance, then entry queue will be preferred.
-Else If the gate was used at time t - 1 for exit, then exit queue will be preferred.
-Else exit queue will be preferred.
-1 <= n <= 10^5
-1 <= time[i] <= 10^9
-time[i] <= time[i+1]
-direction[i] = 0 means entrance, direction[i] = 1 means exit.
-O(n)
-*/
+// /*
+// Rivigo IITK 2018
+// There is a gate in an amusement park. There is an entrance queue and an exit queue.
+// Given two arrays of length n, time[] and direction[] such that time[i] represents 
+// the time when person_i reaches the gate and direction[i] represents whether the 
+// person is joining the entrance queue or exit queue, output an array timestamp[] 
+// of length n such that timestamp[i] represents the time when person_i crosses the 
+// gate. The gate operates as follows:
+// If the gate was used at time t - 1 for entrance, then entry queue will be preferred.
+// Else If the gate was used at time t - 1 for exit, then exit queue will be preferred.
+// Else exit queue will be preferred.
+// 1 <= n <= 10^5
+// 1 <= time[i] <= 10^9
+// time[i] <= time[i+1]
+// direction[i] = 0 means entrance, direction[i] = 1 means exit.
+// O(n)
+// 
 vector<int> getTimeStamps(vector<int> time, vector<int> dir) {
     int n = time.size();
     time.push_back(1E9 + 1E6);
@@ -1432,26 +1433,26 @@ using namespace std;
  
 int main() 
 {
-	int n;
-	cin >> n;
-	string arr[n];
-	for (int i=0; i<n; i++)
-		cin >> arr[i];
-	// int check[26][2] = {0};
-	vector < vector <int>> check;
-	check.resize (26, vector <int> (2, 0));
-	map < vector < vector <int> >, int > mp;
-	for (int i=0; i<n; i++)
-	{
-		for (int j=0; j<arr[i].size(); j++)
-		{
-			check[arr[i][j] - 'a'][j%2]++;
-		}
-		mp[check]++;
-	}
-	// your code goes here
-	cout << mp.size();
-	return 0;
+    int n;
+    cin >> n;
+    string arr[n];
+    for (int i=0; i<n; i++)
+        cin >> arr[i];
+    // int check[26][2] = {0};
+    vector < vector <int>> check;
+    check.resize (26, vector <int> (2, 0));
+    map < vector < vector <int> >, int > mp;
+    for (int i=0; i<n; i++)
+    {
+        for (int j=0; j<arr[i].size(); j++)
+        {
+            check[arr[i][j] - 'a'][j%2]++;
+        }
+        mp[check]++;
+    }
+    // your code goes here
+    cout << mp.size();
+    return 0;
 }
 
 
@@ -1903,35 +1904,36 @@ void topview(Node* root)
 #include <bits/stdc++.h> 
 using namespace std; 
 int day_of_the_week(int y, int m, int d){ 
-	int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 }; 
-	if (m < 3) y -= 1; 
+    int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 }; 
+    if (m < 3) y -= 1; 
  
-	return ((y + y / 4 - y / 100 + y / 400 + t[m - 1] + d) % 7); 
+    return ((y + y / 4 - y / 100 + y / 400 + t[m - 1] + d) % 7); 
 } 
  
 bool isLeap(int year){ 
-	return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)); 
+    return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)); 
 } 
  
 bool valid(int d, int m, int y){ 
  
-	if (m < 1 || m > 12 || d < 1 || d > 31) return false; 
-	if (m == 2){ 
-		if (isLeap(y)) return (d <= 29); 
-		else return (d <= 28); 
-	} 
+    if (m < 1 || m > 12 || d < 1 || d > 31) return false; 
+    if (m == 2){ 
+        if (isLeap(y)) return (d <= 29); 
+        else return (d <= 28); 
+    } 
  
-	if (m == 4 || m == 6 || m == 9 || m == 11) return (d <= 30); 
+    if (m == 4 || m == 6 || m == 9 || m == 11) return (d <= 30); 
  
-	return true; 
+    return true; 
 } 
  
 int main(){ 
-	int day = 13, month = 7, year = 2017; 
-	if(valid(day, month, year))
-		cout<<(day_of_the_week(year, month, day));
-	else cout<<-1<<endl;
-	return 0 ; 
+    int day = 13, month = 7, year = 2017; 
+    if(valid(day, month, year))
+        cout<<(day_of_the_week(year, month, day));
+    else cout<<-1<<endl;
+    return 0 ; 
 } 
 #----------------------
 
+*/
