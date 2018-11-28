@@ -1721,5 +1721,257 @@ int findCousinSum(Node* root, int key){
     return sum;
 }
 
+#----- UBER -----
+#BALLOT - Distributing Ballot Boxes
+
+#include <cstdio>
+#include <algorithm>
+
+using namespace std;
+
+int main(){
+    int N,B,a[500000];
+    
+    while(true){
+        scanf("%d %d",&N,&B);
+        if(N == -1) break;
+        
+        int lo = 1,hi = 0,mi;
+        
+        for(int i = 0;i < N;++i){
+            scanf("%d",&a[i]);
+            hi = max(hi,a[i]);
+        }
+        
+        while(lo < hi){
+            mi = (lo + hi) >> 1;
+            
+            int cont = 0;
+            
+            for(int i = 0;i < N;++i)
+                cont += (a[i] + mi - 1) / mi;
+            
+            if(cont > B) lo = mi + 1;
+            else hi = mi;
+        }
+        
+        printf("%d\n",lo);
+    }
+    
+    return 0;
+}
+#---- martian mining ----
+#include <cstdio>
+#include <algorithm>
+
+using namespace std;
+
+int n,m,P1[500][500],P2[500][500],FR[501][501],FC[501][501],dp[501][501];
+
+int main(){
+    while(1){
+        scanf("%d %d",&n,&m);
+        if(n==0) break;
+        
+        for(int i=0;i<n;i++)
+            for(int j=0;j<m;j++)
+                scanf("%d",&P1[i][j]);
+        
+        for(int i=0;i<n;i++)
+            for(int j=0;j<m;j++)
+                scanf("%d",&P2[i][j]);
+        
+        for(int i=0;i<=m;i++) FR[i][0]=0;
+        for(int i=1;i<=n;i++)
+            for(int j=1;j<=m;j++)
+                FR[i][j]=FR[i][j-1]+P1[i-1][j-1];
+        
+        for(int i=0;i<=n;i++) FC[0][i]=0;
+        for(int i=1;i<=n;i++)
+            for(int j=1;j<=m;j++)
+                FC[i][j]=FC[i-1][j]+P2[i-1][j-1];
+        
+        for(int i=0;i<=m;i++) FC[0][i]=0;
+        for(int i=0;i<=n;i++) FR[i][0]=0;
+        
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++)
+                dp[i][j]=max(dp[i-1][j]+FR[i][j],dp[i][j-1]+FC[i][j]);
+        
+        printf("%d\n",dp[n][m]);
+    }
+    
+    return 0;
+}
+
+#---- first & last occ. of num. in sorted arr - O(N)
+/* if x is present in arr[] then returns the index of 
+   FIRST occurrence of x in arr[0..n-1], otherwise 
+   returns -1 
+int first(int arr[], int low, int high, int x, int n) 
+{ 
+    if(high >= low) 
+    { 
+        int mid = low + (high - low)/2; 
+        if( ( mid == 0 || x > arr[mid-1]) && arr[mid] == x) 
+            return mid; 
+        else if(x > arr[mid]) 
+            return first(arr, (mid + 1), high, x, n); 
+        else
+            return first(arr, low, (mid -1), x, n); 
+    } 
+    return -1; 
+} 
+  
+  
+/* if x is present in arr[] then returns the index of 
+   LAST occurrence of x in arr[0..n-1], otherwise 
+   returns -1 
+int last(int arr[], int low, int high, int x, int n) 
+{ 
+    if (high >= low) 
+    { 
+        int mid = low + (high - low)/2; 
+        if (( mid == n-1 || x < arr[mid+1]) && arr[mid] == x) 
+            return mid; 
+        else if (x < arr[mid]) 
+            return last(arr, low, (mid -1), x, n); 
+        else
+            return last(arr, (mid + 1), high, x, n); 
+    } 
+    return -1; 
+}
+
+#---- valid sudoko -----
+bool notInRow(char arr[][9], int row) 
+{ 
+    // Set to store characters seen so far. 
+    set<char> st; 
+  
+    for (int i = 0; i < 9; i++) { 
+  
+        // If already encountered before, return false 
+        if (st.find(arr[row][i]) != st.end()) 
+            return false; 
+  
+        // If it is not an empty cell, insert value 
+        // at the current cell in the set 
+        if (arr[row][i] != '.') 
+            st.insert(arr[row][i]); 
+    } 
+    return true; 
+} 
+  
+// Checks whether there is any duplicate 
+// in current column or not. 
+bool notInCol(char arr[][9], int col) 
+{ 
+    set<char> st; 
+  
+    for (int i = 0; i < 9; i++) { 
+  
+        // If already encountered before, return false 
+        if (st.find(arr[i][col]) != st.end()) 
+            return false; 
+  
+        // If it is not an empty cell, 
+        // insert value at the current cell in the set 
+        if (arr[i][col] != '.') 
+            st.insert(arr[i][col]); 
+    } 
+    return true; 
+} 
+  
+// Checks whether there is any duplicate 
+// in current 3x3 box or not. 
+bool notInBox(char arr[][9], int startRow, int startCol) 
+{ 
+    set<char> st; 
+  
+    for (int row = 0; row < 3; row++) { 
+        for (int col = 0; col < 3; col++) { 
+            char curr = arr[row + startRow][col + startCol]; 
+  
+            // If already encountered before, return false 
+            if (st.find(curr) != st.end()) 
+                return false; 
+  
+            // If it is not an empty cell, 
+            // insert value at current cell in set 
+            if (curr != '.') 
+                st.insert(curr); 
+        } 
+    } 
+    return true; 
+} 
+  
+// Checks whether current row and current column and 
+// current 3x3 box is valid or not 
+bool isValid(char arr[][9], int row, int col) 
+{ 
+    return notInRow(arr, row) && notInCol(arr, col) && 
+           notInBox(arr, row - row % 3, col - col % 3); 
+} 
+  
+bool isValidConfig(char arr[][9], int n) 
+{ 
+    for (int i = 0; i < n; i++) { 
+        for (int j = 0; j < n; j++) { 
+  
+            // If current row or current column or 
+            // current 3x3 box is not valid, return false 
+            if (!isValid(arr, i, j)) 
+                return false; 
+        } 
+    } 
+    return true; 
+}
+
+#---- roman to decimal
+// This function returns value of a Roman symbol 
+int value(char r) 
+{ 
+    if (r == 'I')return 1;if(r == 'V')return 5; if(r == 'X')return 10; 
+    if (r == 'L')return 50;if (r == 'C')return 100;if (r == 'D')return 500; 
+    if (r == 'M')return 1000;return -1; 
+} 
+// Returns decimal value of roman numaral 
+int romanToDecimal(string &str) 
+{ 
+    // Initialize result 
+    int res = 0; 
+  
+    // Traverse given input 
+    for (int i=0; i<str.length(); i++) 
+    { 
+        // Getting value of symbol s[i] 
+        int s1 = value(str[i]); 
+  
+        if (i+1 < str.length()) 
+        { 
+            // Getting value of symbol s[i+1] 
+            int s2 = value(str[i+1]); 
+  
+            // Comparing both values 
+            if (s1 >= s2) 
+            { 
+                res = res + s1; 
+            } 
+            else
+            { 
+                res = res + s2 - s1;i++;
+            } 
+        } 
+        else
+        { 
+            res = res + s1; 
+            i++; 
+        } 
+    } 
+    return res; 
+} 
+
+
+
 */
 
